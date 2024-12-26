@@ -3,9 +3,9 @@
 - [students](#students)
 - [classes](#classes)
 - [class_students](#class_students)
+- [class_teachers](#class_teachers)
 - [administrators](#administrators)
 - [coordinators](#coordinators)
-- [scholarships](#scholarships)
 - [monitors](#monitors)
 - [accounts](#accounts)
 - [activities](#activities)
@@ -14,12 +14,12 @@
 
 ## schools
 ```sql
-INSERT INTO mydb.schools (`name`, `cnpj`, `address`, `email`, `phone`) VALUES
-('Escola do Saber', '12.345.678/0001-90', 'Rua das Flores, 123, Fortaleza, CE', 'contato@saber.com.br', '+55 (85) 3211-4321'),
-('Colégio Aprender', '98.765.432/0002-10', 'Av. Central, 456, São Paulo, SP', 'info@aprender.com.br', '+55 (11) 4002-8922'),
-('Instituto Conhecer', '56.789.012/0003-00', 'Rua Horizonte, 789, Rio de Janeiro, RJ', 'suporte@conhecer.org', '+55 (21) 3303-7788'),
-('Centro Educacional Futuro', '34.567.890/0004-12', 'Av. Brasil, 1010, Belo Horizonte, MG', 'admin@futuro.edu.br', '+55 (31) 3500-9191'),
-('Escola Crescer', '23.456.789/0005-01', 'Rua da Alegria, 2020, Salvador, BA', 'crescer@escola.com.br', '+55 (71) 3030-5050');
+INSERT INTO mydb.schools (`name`, `cnpj`, `address`, `email`, `phone`, `account_id`) VALUES
+('Escola do Saber', '12.345.678/0001-90', 'Rua das Flores, 123, Fortaleza, CE', 'contato@saber.com.br', '+55 (85) 3211-4321', 1),
+('Colégio Aprender', '98.765.432/0002-10', 'Av. Central, 456, São Paulo, SP', 'info@aprender.com.br', '+55 (11) 4002-8922', 1),
+('Instituto Conhecer', '56.789.012/0003-00', 'Rua Horizonte, 789, Rio de Janeiro, RJ', 'suporte@conhecer.org', '+55 (21) 3303-7788', 1),
+('Centro Educacional Futuro', '34.567.890/0004-12', 'Av. Brasil, 1010, Belo Horizonte, MG', 'admin@futuro.edu.br', '+55 (31) 3500-9191', 1),
+('Escola Crescer', '23.456.789/0005-01', 'Rua da Alegria, 2020, Salvador, BA', 'crescer@escola.com.br', '+55 (71) 3030-5050', 1);
 ```
 ```sql
 SELECT id, name, cnpj, address, email, phone, image_url, created_at, updated_at
@@ -100,17 +100,17 @@ FROM mydb.students;
 
 ## classes
 ```sql
-INSERT INTO mydb.classes (`name`, `shift`, `academic_year`, `school_id`) VALUES
-('1º Ano A', 'MORNING', '2025.1', 1),
-('1º Ano B', 'AFTERNOON', '2025.1', 1),
-('2º Ano A', 'MORNING', '2024.2', 2),
-('2º Ano B', 'EVENING', '2024.2', 2),
-('3º Ano A', 'AFTERNOON', '2025.1', 3),
-('3º Ano B', 'MORNING', '2025.1', 3),
-('4º Ano A', 'EVENING', '2024.2', 4),
-('4º Ano B', 'MORNING', '2024.2', 4),
-('5º Ano A', 'AFTERNOON', '2025.1', 5),
-('5º Ano B', 'EVENING', '2025.1', 5);
+INSERT INTO mydb.classes (`name`, `shift`, `academic_year`, `account_id`, `school_id`) VALUES
+('1º Ano A', 'MORNING', '2025.1', 1, 1),
+('1º Ano B', 'AFTERNOON', '2025.1', 1, 1),
+('2º Ano A', 'MORNING', '2024.2', 1, 2),
+('2º Ano B', 'EVENING', '2024.2', 1, 2),
+('3º Ano A', 'AFTERNOON', '2025.1', 1, 3),
+('3º Ano B', 'MORNING', '2025.1', 1, 3),
+('4º Ano A', 'EVENING', '2024.2', 1, 4),
+('4º Ano B', 'MORNING', '2024.2', 1, 4),
+('5º Ano A', 'AFTERNOON', '2025.1', 1, 5),
+('5º Ano B', 'EVENING', '2025.1', 1, 5);
 ```
 ```sql
 SELECT id, name, shift, academic_year, created_at, updated_at, school_id
@@ -199,6 +199,15 @@ INNER JOIN mydb.students student ON cs.student_id = student.id
 INNER JOIN mydb.schools school ON school.id = student.school_id;
 ```
 
+## class_teachers
+```sql
+INSERT INTO mydb.class_teachers (account_id, class_id) VALUES (2, 1);
+```
+```sql
+SELECT id, created_at, updated_at, account_id, class_id
+FROM mydb.class_teachers;
+```
+
 ## administrators
 ```sql
 INSERT INTO mydb.administrators (`name`, `email`)
@@ -219,16 +228,6 @@ SELECT id, name, email, has_account, created_at, updated_at, account_id
 FROM mydb.administrators;
 ```
 
-## scholarships
-```sql
-INSERT INTO mydb.scholarships (`name`, `email`)
-VALUES ('Gabriel Lima', 'gabriel.lima@email.com');
-```
-```sql
-SELECT id, name, email, has_account, created_at, updated_at, account_id
-FROM mydb.scholarships;
-```
-
 ## monitors
 ```sql
 INSERT INTO mydb.monitors (`name`, `email`)
@@ -241,17 +240,17 @@ FROM mydb.monitors;
 
 ## accounts
 ```sql
-INSERT INTO mydb.accounts (`email`, `password`, `image_url`, `role`, `role_id`)
-VALUES ('alexandre.pereira@email.com', 'alexandre123', 'https://ui-avatars.com/api/?name=alexandre.pereira&background=random', 'ADMINISTRATOR', 1);
+INSERT INTO mydb.accounts (`email`, `password`, `image_url`, `role`)
+VALUES ('alexandre.pereira@email.com', 'alexandre123', 'https://ui-avatars.com/api/?name=alexandre.pereira&background=random', 'ADMINISTRATOR');
 
-INSERT INTO mydb.accounts (`email`, `password`, `image_url`, `role`, `role_id`)
-VALUES ('lucas.andrade@email.com', 'lucas123', 'https://ui-avatars.com/api/?name=lucas.andrade&background=random', 'COORDINATOR', 1);
+INSERT INTO mydb.accounts (`email`, `password`, `image_url`, `role`)
+VALUES ('lucas.andrade@email.com', 'lucas123', 'https://ui-avatars.com/api/?name=lucas.andrade&background=random', 'COORDINATOR');
 
-INSERT INTO mydb.accounts (`email`, `password`, `image_url`, `role`, `role_id`)
-VALUES ('gabriel.lima@email.com', 'gabriel123', 'https://ui-avatars.com/api/?name=gabriel.lima&background=random', 'SCHOLARSHIP', 1);
+INSERT INTO mydb.accounts (`email`, `password`, `image_url`, `role`)
+VALUES ('gabriel.lima@email.com', 'gabriel123', 'https://ui-avatars.com/api/?name=gabriel.lima&background=random', 'SCHOLARSHIP');
 
-INSERT INTO mydb.accounts (`email`, `password`, `image_url`, `role`, `role_id`)
-VALUES ('ana.carolina.souza@email.com', 'ana123', 'https://ui-avatars.com/api/?name=ana.carolina.souza&background=random', 'MONITOR', 1);
+INSERT INTO mydb.accounts (`email`, `password`, `image_url`, `role`)
+VALUES ('ana.carolina.souza@email.com', 'ana123', 'https://ui-avatars.com/api/?name=ana.carolina.souza&background=random', 'MONITOR');
 ```
 ```sql
 SELECT id, email, password, image_url, status, `role`, created_at, updated_at, role_id
@@ -267,7 +266,7 @@ INSERT INTO mydb.activities
   'Crie um repositório no GitHub e configure um README.md com as informações sobre seu projeto. Inclua no repositório pelo menos 3 commits bem descritos.',
   10,
   '2025-01-15',
-  4,
+  2,
   1
 );
 ```
@@ -279,13 +278,14 @@ FROM mydb.activities;
 ## lesson_plans
 ```sql
 INSERT INTO mydb.lesson_plans
-(title, description, objectives, materials)
+(`title`, `description`, `objectives`, `materials`, `account_id`)
 VALUES
 (
   'Introdução ao Git e GitHub',
   'Neste plano de aula, os alunos aprenderão como criar um repositório no GitHub, configurar um README.md e realizar commits em um projeto.',
   '1. Criar um repositório no GitHub\n2. Configurar um README.md\n3. Realizar pelo menos 3 commits descritivos\n4. Subir o código para o GitHub',
-  'Computadores com acesso à internet, Git instalado, conta no GitHub'
+  'Computadores com acesso à internet, Git instalado, conta no GitHub',
+  2
 );
 ```
 ```sql
@@ -296,14 +296,15 @@ FROM mydb.lesson_plans;
 ## lessons
 ```sql
 INSERT INTO mydb.lessons
-(title, description, date, lesson_plan_id, class_id)
+(`title`, `description`, `date`, `lesson_plan_id`, `class_id`, `account_id`)
 VALUES
 (
   'Git Básico: Criando um Repositório',
   'Nesta lição, os alunos aprenderão como criar um repositório no GitHub, fazer o commit inicial e entender o fluxo básico do Git.',
   '2025-01-20 10:00:00',
   1,
-  1
+  1,
+  2
 );
 ```
 ```sql
