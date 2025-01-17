@@ -489,7 +489,7 @@ ENGINE = InnoDB;
 -- Table `mydb`.`verification_codes`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `mydb`.`verification_codes` (
-  `id` INT NOT NULL,
+  `id` INT NOT NULL AUTO_INCREMENT,
   `email` VARCHAR(256) NOT NULL,
   `code` CHAR(6) NOT NULL,
   `expires_at` DATETIME NOT NULL,
@@ -557,8 +557,15 @@ BEGIN
   WHERE cs.class_id = NEW.class_id;
 END$$
 
-
 DELIMITER ;
+
+SET GLOBAL event_scheduler = ON;
+
+CREATE EVENT delete_expired_verification_codes
+ON SCHEDULE EVERY 60 MINUTE
+DO
+DELETE FROM verification_codes
+WHERE expires_at < NOW();
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
